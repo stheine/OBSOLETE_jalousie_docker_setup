@@ -13,6 +13,16 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/jalousie
+  nas_fritzbox:
+    # //fritz.nas/fritz.nas/FritzBox/NAS /mnt/fritzbox_nas cifs username=nas,passwd= 0 0
+    driver: cifs
+    driver_opts:
+#      share: //fritz.nas/fritz.nas/FritzBox/NAS
+#      share: 192.168.6.1/fritz.nas/FritzBox/NAS
+      share: fritz.nas/fritz.nas/FritzBox/NAS
+      username: nas
+      passwd: "nas1"
+      password: "nas2"
   portainer:
     driver: local
     driver_opts:
@@ -31,6 +41,12 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/postfix_spool
+  twonky:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/twonky
   vito:
     driver: local
     driver_opts:
@@ -152,3 +168,15 @@ services:
       - /dev/ttyAMA0:/dev/ttyAMA0
     networks:
       - backend
+  twonky:
+    restart: unless-stopped
+    build: twonky
+    # Note: 'network_mode: host' is required for twonky to receive multicast traffic to detect the upnp server.
+    network_mode: host
+    ports:
+      - 1030:1030/udp
+      - 1900:1900/udp
+      - 9000:9000
+    volumes:
+      - nas_fritzbox:/mnt/nas_fritzbox:nocopy
+      - twonky:/var/twonky:nocopy

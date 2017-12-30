@@ -1,0 +1,37 @@
+FROM arm32v6/alpine:3.6
+
+RUN apk update && \
+  apk add --no-cache \
+    bash \
+    ca-certificates \
+    wget && \
+  mkdir /source
+
+# ##############################################################################
+# Set up timezone
+
+RUN \
+  apk add tzdata && \
+  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+  echo "Europe/Berlin" > /etc/timezone && \
+  apk del tzdata
+
+# ##############################################################################
+# Install and run twonky from http://www.twonkyforum.com/downloads/
+# Get the url of the package 'Linux ARM little endian glibc 2.13 HF (Raspbian)'
+
+RUN \
+  cd /source && \
+  wget http://www.twonkyforum.com/downloads/8.5/twonky-armel-uclibc-1.0.9-8.5.zip && \
+  mkdir /twonky && \
+  cd /twonky && \
+  unzip /source/twonky-armel-uclibc-1.0.9-8.5.zip
+
+EXPOSE 1030/udp 1900/udp 9000/tcp
+
+# VOLUME /home/vmail
+
+COPY docker_container_profile /root/.profile
+CMD ["/bin/bash", "-l"]
+
+# CMD ["/usr/sbin/dovecot", "-F"]
