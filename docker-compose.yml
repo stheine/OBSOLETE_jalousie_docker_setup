@@ -56,7 +56,7 @@ networks:
 
 services:
   portainer:
-    restart: always
+    restart: unless-stopped
     image: portainer/portainer
     ports:
       - 9000:9000
@@ -64,7 +64,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer:/data:nocopy
   nginx:
-    restart: always
+    restart: unless-stopped
     build: nginx
     ports:
       - 80:80
@@ -76,7 +76,7 @@ services:
     links:
       - apache2
   dovecot:
-    restart: always
+    restart: unless-stopped
     build: dovecot
     ports:
       - 993:993
@@ -84,7 +84,7 @@ services:
       - certs:/etc/dovecot/certs:nocopy
       - vmail:/home/vmail:nocopy
   pigpiod:
-    restart: always
+    restart: unless-stopped
     build: pigpiod
     cap_add:
       - SYS_RAWIO
@@ -96,7 +96,7 @@ services:
     ports:
       - 8888:8888
   apache2:
-    restart: always
+    restart: unless-stopped
     build: apache2
     ports:
       - 8080:8080
@@ -109,7 +109,7 @@ services:
     links:
       - jalousie
   jalousie:
-    restart: always
+    restart: unless-stopped
     build: jalousie
     ports:
       - 9124:9124
@@ -122,7 +122,7 @@ services:
       - postfix
       - pigpiod
   vito:
-    restart: always
+    restart: unless-stopped
     build: vito
     networks:
       - backend
@@ -132,7 +132,7 @@ services:
       - postfix
       - vcontrold
   postfix:
-    restart: always
+    restart: unless-stopped
     build: postfix
     ports:
       - "25:25"
@@ -142,7 +142,7 @@ services:
       - postfix_creds:/postfix_creds:nocopy
 # TODO      - postfix_spool:/var/spool/postfix:nocopy
   vcontrold:
-    restart: always
+    restart: unless-stopped
     build: vcontrold
     ports:
       - 3002:3002
