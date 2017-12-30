@@ -1,0 +1,110 @@
+#!/bin/sh
+# vclient script to check for errors
+
+mkdir /var/lock/checkError.sh 2>/dev/null
+if [ $? != 0 ]
+then
+  exit 1
+fi
+
+
+
+# Letzten Fehlereintrag prüfen
+
+LAST_ERROR_RAW=`echo "$1" | grep -v -e '^$' -e ':'`
+# F5 20 15 10 06 02 13 30 40
+CODE=`echo "$LAST_ERROR_RAW" | awk '{ print $1 }'`
+if [ -n "$CODE" ]
+then
+  if [ $CODE != "00" ]
+  then
+    DATE=`echo "$LAST_ERROR_RAW" | awk '{ print $2$3"-"$4"-"$5" "$7":"$8":"$9 }'`
+    touch --date="$DATE" _lastError.time
+
+    if [ _lastError.reported -ot _lastError.time ]
+    then
+      STOERUNG=`echo "$LAST_ERROR_RAW" | awk '{ print $1 }'`
+#      echo "Störung $STOERUNG: $DATE"
+      /usr/sbin/sendmail -t <<-EOF
+From: vito <technik@heine7.de>
+To: stefan@heine7.de
+Subject: Heizung Störung ($STOERUNG)
+Content-Type: text/html; charset=UTF-8
+
+Störung $STOERUNG: $DATE
+EOF
+
+      echo "$STOERUNG: $DATE" >> /var/vito/vitoStoerungen.log
+
+      touch _lastError.reported
+    #else
+    #  echo "Already reported"
+    fi
+  fi
+else
+  /usr/sbin/sendmail -t <<-EOF
+From: vito <technik@heine7.de>
+To: stefan@heine7.de
+Subject: Vito nicht erreichbar
+Content-Type: text/html; charset=UTF-8
+
+Vito nicht erreichbar
+EOF
+fi
+
+
+
+# Check Asche Verbrauch
+
+VERBRAUCH_KG=`echo "$2" | sed -e 's/\.000000//'`
+LETZTE_LEERUNG_KG=`cat /var/vito/_ascheGeleert.log | tail -1 | awk '{print $2}'`
+VERBRAUCH_SEITDEM=`expr $VERBRAUCH_KG - $LETZTE_LEERUNG_KG`
+if ([ "$VERBRAUCH_SEITDEM" -gt 400 ] && [ "$VERBRAUCH_SEITDEM" -lt 410 ]) || \
+    [ "$VERBRAUCH_SEITDEM" -gt 480 ]
+then
+  touch --date="`date --iso-8601`" _lastAsche.now
+  if [ _lastAsche.reportedPlus2 -ot _lastAsche.now ]
+  then
+    /usr/sbin/sendmail -t <<-EOF
+From: vito <technik@heine7.de>
+To: stefan@heine7.de
+Subject: Asche leeren
+Content-Type: text/html; charset=UTF-8
+
+Verbrauch seit letzter Leerung: $VERBRAUCH_SEITDEM kg<br>Asche leeren.
+EOF
+    touch --date="`date --iso-8601 --date '2 days'`" _lastAsche.reportedPlus2
+  fi
+fi
+
+
+
+# Uhrzeit Einstellung prüfen
+
+vitoZeit=`echo "$3" | awk -F ' ' '{print $1$2$3$4$6$7$8}'`
+systemZeit=`date +%Y%m%d%H%M%S`
+zeitDiff=`expr $systemZeit - $vitoZeit`
+if ([ -59 -gt $zeitDiff ] || [ $zeitDiff -gt 59 ])
+then
+  if [ ! -f _uhrzeitFalsch.reported ]
+  then
+    /usr/sbin/sendmail -t <<-EOF
+From: vito <technik@heine7.de>
+To: stefan@heine7.de
+Subject: Vito Uhrzeit falsch
+Content-Type: text/html; charset=UTF-8
+
+Vito Uhrzeit geht falsch um $zeitDiff Sekunden<p>$3<br>$vitoZeit<br>$systemZeit<br>$zeitDiff
+EOF
+    touch _uhrzeitFalsch.reported
+  fi
+else
+  if [ -f _uhrzeitFalsch.reported ]
+  then
+    rm _uhrzeitFalsch.reported
+  fi
+fi
+
+
+
+rmdir /var/lock/checkError.sh
