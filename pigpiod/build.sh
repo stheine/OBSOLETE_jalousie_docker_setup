@@ -27,7 +27,6 @@ echo -e "\nRunning container...\n"
 #  --name    # Assign a name to the container
 #  pigpiod   # <image>
 docker run \
-  -d \
   -i \
   -t \
   --cap-add SYS_RAWIO \
@@ -38,5 +37,6 @@ docker run \
   --name pigpiod \
   pigpiod
 
+#  -d \
 
 if [ $? != 0 ]; then echo "Failed"; exit 1; fi

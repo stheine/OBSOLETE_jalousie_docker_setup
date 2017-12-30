@@ -46,4 +46,8 @@ EXPOSE 8888
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-CMD ["/usr/local/bin/pigpiod", "-g"]
+COPY start.sh /
+CMD ["/start.sh"]
+
+# ENTRYPOINT ["/usr/local/bin/pigpiod", "-g"]
+# CMD ["/usr/local/bin/pigpiod", "-g"]
