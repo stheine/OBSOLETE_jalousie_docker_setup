@@ -60,6 +60,9 @@ sudo systemctl disable hciuart
 
 ## Docker related tasks
 ```
+git config --global user.email "stheine@arcor.de"
+git config --global user.name "Stefan Heine"
+
 ln -s /mnt/mybook_data/linux/docker /home/pirate/
 
 crontab -e
