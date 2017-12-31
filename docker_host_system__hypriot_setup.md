@@ -36,17 +36,21 @@ sudo vi /boot/cmdline.txt
 ```
 sudo vi /boot/config.txt
 ```
-> # Enable the optional hardware interface, SPI
+> \# Enable the optional hardware interface, SPI
+>
 > dtparam=spi=on
 >
-> # Enable UART
+> \# Enable UART
+>
 > enable_uart=1
 > 
-> # Disable bluetooth
+> \# Disable bluetooth
+>
 > dtoverlay=pi3-disable-bt
 > 
-> # Allow higher USB current
-> # max_usb_current=1
+> \# Allow higher USB current
+>
+> \# max_usb_current=1
 
 ```
 sudo vi /etc/inittab
