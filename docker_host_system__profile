@@ -1,5 +1,7 @@
 alias vi=vim.tiny
 
+export EDITOR=vi
+
 export ESC=`echo "\\033"`
 BOLDRED="$ESC[1;31m"
 BGGREEN="$ESC[48;5;2m$ESC[38;5;7m"

@@ -96,10 +96,11 @@ COPY \
   /vito/
 
 RUN \
-  ln -s /vito/getVitoData.sh /etc/periodic/15min/getVitoData
+  mkdir /etc/periodic/2min && \
+  echo -e '*/2	*	*	*	*	run-parts /etc/periodic/2min\n' >> /var/spool/cron/crontabs/root && \
+  ln -s /vito/getVitoData.sh /etc/periodic/2min/getVitoData
 
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-# CMD ["/usr/sbin/crond", "-f", "-d", "0"]
 CMD ["/usr/sbin/crond", "-f"]
