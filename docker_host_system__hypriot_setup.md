@@ -61,6 +61,22 @@ sudo vi /etc/inittab
 sudo systemctl disable hciuart
 ```
 
+## Allow docker access to CIFS filesystem
+
+https://github.com/gondor/docker-volume-netshare/blob/master/README.md
+
+```
+wget https://github.com/ContainX/docker-volume-netshare/releases/download/v0.34/docker-volume-netshare_0.34_armhf.deb
+sudo dpkg -i docker-volume-netshare_0.34_armhf.deb
+rm docker-volume-netshare_0.34_armhf.deb
+
+sudo vi /etc/default/docker-volume-netshare
+```
+> DKV_NETSHARE_OPTS="cifs"
+```
+sudo systemctl enable docker-volume-netshare
+sudo systemctl start docker-volume-netshare
+```
 
 ## Docker related tasks
 ```
@@ -78,7 +94,6 @@ cd docker
 ./run.sh
 ```
 
-
 # Maintenance
 
 ## Docker cleanup
@@ -87,7 +102,6 @@ cd docker
 docker system prune
 docker volume prune
 ```
-
 
 # References
 
