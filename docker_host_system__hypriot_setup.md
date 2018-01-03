@@ -103,6 +103,11 @@ sudo reboot
 ```
 git config --global user.email "stheine@arcor.de"
 git config --global user.name "Stefan Heine"
+git config --global push.default simple
+
+cp /mnt/mybook_data/linux/sshd_certs/pirate /home/pirate/.ssh/id_rsa
+ssh -T git@github.com
+# accept the host's fingerprint
 
 ln -s /mnt/mybook_data/linux/docker /home/pirate/
 
