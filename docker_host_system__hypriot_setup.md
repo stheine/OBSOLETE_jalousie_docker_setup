@@ -120,6 +120,16 @@ crontab -e
 ```
 > @reboot (sleep 30s ; cd /mnt/mybook_data/linux/docker/compose ; /usr/local/bin/docker-compose up -d )&
 
+# Let's Encrypt
+
+https://miki725.github.io/docker/crypto/2017/01/29/docker+nginx+letsencrypt.html
+https://certbot.eff.org/#debianother-other
+
+```
+crontab -e
+```
+> 26 0,12 * * * /usr/local/bin/docker-compose run certbot
+
 # Maintenance
 
 ## Docker cleanup

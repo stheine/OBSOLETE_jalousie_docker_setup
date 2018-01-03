@@ -1,18 +1,24 @@
 version: "3"
 
 volumes:
-  certs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=192.168.6.22,nolock,ro
-      device: :/nfs/Data/linux/certs
   jalousie:
     driver: local
     driver_opts:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/jalousie
+  letsencrypt:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/letsencrypt
+  letsencrypt_www:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/letsencrypt_www
   nas_fritzbox:
     # //fritz.nas/fritz.nas/FritzBox/NAS /mnt/fritzbox_nas cifs username=nas,passwd= 0 0
     driver: cifs
@@ -88,16 +94,27 @@ services:
     networks:
       - backend
     volumes:
-      - certs:/etc/nginx/certs:nocopy
+      - letsencrypt:/etc/letsencrypt:nocopy
+      - letsencrypt_www:/var/letsencrypt:nocopy
     links:
       - apache2
+      - jalousie
+  certbot:
+    # Note: This container is started with /bin/true. This is just a dummy to prevent it from doing anything.
+    #       The real action is called by cron '/mnt/mybook_data/linux/docker/certbot/renew.sh'
+    restart: "no"
+    build: certbot
+    command: /bin/true
+    volumes:
+      - letsencrypt:/etc/letsencrypt:nocopy
+      - letsencrypt_www:/var/letsencrypt
   dovecot:
     restart: unless-stopped
     build: dovecot
     ports:
       - 993:993
     volumes:
-      - certs:/etc/dovecot/certs:nocopy
+      - letsencrypt:/etc/letsencrypt:nocopy
       - vmail:/home/vmail:nocopy
   pigpiod:
     restart: unless-stopped
