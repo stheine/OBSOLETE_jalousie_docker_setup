@@ -14,8 +14,9 @@ sudo vi /boot/user-data
 sudo dpkg-reconfigure tzdata
 
 sudo apt-get update
-sudo apt-get install nfs-common
+sudo apt-get install -y nfs-common
 echo '192.168.6.22:/nfs/Data /mnt/mybook_data nfs defaults 0 0' | sudo tee -a /etc/fstab
+sudo mkdir /mnt/mybook_data
 sudo mount -a
 
 cat /mnt/mybook_data/linux/docker/docker_host_system__profile >> .profile
@@ -27,6 +28,17 @@ log out and log in again to make the new profile settings active
 
 
 ## Allow access to the GPIO serial port
+
+https://github.com/openv/openv/wiki/Bauanleitung-RaspberryPi
+https://www.raspberrypi.org/documentation/configuration/uart.md
+https://www.raspberrypi.org/documentation/configuration/config-txt/boot.md
+https://spellfoundry.com/2016/05/29/configuring-gpio-serial-port-raspbian-jessie-including-pi-3/
+
+Note: This is not properly working on Hypriot. It seems like the Hypriot kernel does not support the dtoverlays to enable the UART.
+
+Workaround: ```rpi-update``` to update the kernel - but this is a non-Hypriot kernel then.
+
+https://gitter.im/hypriot/talk
 
 ```
 sudo vi /boot/cmdline.txt
@@ -47,10 +59,13 @@ sudo vi /boot/config.txt
 > \# Disable bluetooth
 >
 > dtoverlay=pi3-disable-bt
+> dtoverlay=pi3-miniuart-bt
 > 
 > \# Allow higher USB current
 >
 > \# max_usb_current=1
+
+https://www.raspberrypi.org/documentation/configuration/uart.md
 
 ```
 sudo vi /etc/inittab
@@ -78,6 +93,12 @@ sudo systemctl enable docker-volume-netshare
 sudo systemctl start docker-volume-netshare
 ```
 
+## Reboot to make all the changes active
+
+```
+sudo reboot
+```
+
 ## Docker related tasks
 ```
 git config --global user.email "stheine@arcor.de"
@@ -85,14 +106,14 @@ git config --global user.name "Stefan Heine"
 
 ln -s /mnt/mybook_data/linux/docker /home/pirate/
 
+cd docker
+docker-compose build
+
+./run.sh
+
 crontab -e
 ```
 > @reboot (sleep 30s ; cd /mnt/mybook_data/linux/docker/compose ; /usr/local/bin/docker-compose up -d )&
-
-```
-cd docker
-./run.sh
-```
 
 # Maintenance
 
