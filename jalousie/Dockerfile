@@ -68,6 +68,9 @@ RUN \
 # ##############################################################################
 # Install and run jalousie app
 
+# This command is just to invalidate the cache and force docker to rebuild the app from here on
+ADD https://www.random.org/strings/?num=16&len=16&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new uuid
+
 RUN \
   apk add \
     git \
@@ -76,12 +79,24 @@ RUN \
   cd /jalousie && \
   npm install
 
+# ##############################################################################
+# Setting for development environment
+RUN \
+  apk add \
+    vim && \
+  npm install --global \
+    eslint-cli && \
+  git config --global user.email "stheine@arcor.de" && \
+  git config --global user.name "Stefan Heine" && \
+  git config --global core.pager "more"
 
-EXPOSE 9124
-VOLUME /var/jalousie
-VOLUME /var/vito
+COPY vimrc /root/.vimrc
 
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-CMD ["node", "/jalousie/lib/jalousie.js"]
+ENTRYPOINT ["/usr/local/bin/node", "/jalousie/lib/jalousie.js"]
+
+EXPOSE 9124
+VOLUME /var/jalousie
+VOLUME /var/vito
