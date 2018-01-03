@@ -69,7 +69,8 @@ RUN \
 # Install and run jalousie app
 
 # This command is just to invalidate the cache and force docker to rebuild the app from here on
-ADD https://www.random.org/strings/?num=16&len=16&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new uuid
+# docker-compose build --build-arg CACHE_DATE=$(date) jalousie
+ARG CACHE_DATE=2018-01-03
 
 RUN \
   apk add \
