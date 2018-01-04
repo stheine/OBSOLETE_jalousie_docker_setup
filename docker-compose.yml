@@ -19,12 +19,16 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/letsencrypt_www
+  musik:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Musik
   nas_fritzbox:
     # //fritz.nas/fritz.nas/FritzBox/NAS /mnt/fritzbox_nas cifs username=nas,passwd= 0 0
     driver: cifs
     driver_opts:
-#      share: //fritz.nas/fritz.nas/FritzBox/NAS
-#      share: 192.168.6.1/fritz.nas/FritzBox/NAS
       share: fritz.nas/fritz.nas/FritzBox/NAS
       username: nas
       passwd: "nas1"
@@ -47,6 +51,18 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/postfix_spool
+  unison:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/unison
+  sshd_certs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/sshd_certs
   twonky:
     driver: local
     driver_opts:
@@ -197,3 +213,12 @@ services:
     volumes:
       - nas_fritzbox:/mnt/nas_fritzbox:nocopy
       - twonky:/var/twonky:nocopy
+  unison:
+    restart: unless-stopped
+    build: unison
+    ports:
+      - 1499:1499
+    volumes:
+      - musik:/var/musik:nocopy
+      - sshd_certs:/var/sshd_certs:nocopy
+      - unison:/root/.unison:nocopy
