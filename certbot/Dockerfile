@@ -21,9 +21,7 @@ WORKDIR /certbot
 
 RUN \
   wget https://dl.eff.org/certbot-auto && \
-  chmod a+x certbot-auto
- 
-RUN \
+  chmod a+x certbot-auto && \
   apk add \
     augeas \
     gcc \
