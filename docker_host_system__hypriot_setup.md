@@ -93,6 +93,24 @@ sudo systemctl enable docker-volume-netshare
 sudo systemctl start docker-volume-netshare
 ```
 
+## Allow email on the host
+
+```
+sudo apt-get install -y mailutils ssmtp
+echo "mailhub=localhost" | sudo tee /etc/ssmtp/ssmtp.conf
+```
+
+Test:
+```
+/usr/sbin/sendmail -t <<-EOF
+From: pirate <technik@heine7.de>
+To: stefan@heine7.de
+Subject: test
+
+test mail
+EOF
+```
+
 ## Reboot to make all the changes active
 
 ```
@@ -118,7 +136,7 @@ docker-compose build
 
 crontab -e
 ```
-> @reboot (sleep 30s ; cd /mnt/mybook_data/linux/docker/compose ; /usr/local/bin/docker-compose up -d )&
+> @reboot (sleep 30s ; cd /mnt/mybook_data/linux/docker ; /usr/local/bin/docker-compose up -d )&
 
 # Let's Encrypt
 
