@@ -26,11 +26,10 @@ RUN \
   cd /twonky && \
   unzip /source/twonky-armel-glibc-2.13-hf-8.5.zip
 
-EXPOSE 1030/udp 1900/udp 9000/tcp
-VOLUME /mnt/nas_fritzbox
-VOLUME /var/twonky
-
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
 ENTRYPOINT ["/twonky/twonkyserver"]
+
+EXPOSE 1030/udp 1900/udp 9000/tcp
+VOLUME /mnt/nas_fritzbox /var/twonky/twonkyserver

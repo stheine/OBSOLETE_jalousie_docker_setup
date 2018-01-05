@@ -63,12 +63,12 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/sshd_certs
-  twonky:
+  twonkyserver:
     driver: local
     driver_opts:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
-      device: :/nfs/Data/linux/twonky
+      device: :/nfs/Data/linux/twonkyserver
   vito:
     driver: local
     driver_opts:
@@ -212,7 +212,7 @@ services:
       - 9000:9000
     volumes:
       - nas_fritzbox:/mnt/nas_fritzbox:nocopy
-      - twonky:/var/twonky:nocopy
+      - twonkyserver:/var/twonky/twonkyserver:nocopy
   unison:
     restart: unless-stopped
     build: unison
