@@ -2,17 +2,22 @@ FROM arm32v6/alpine:3.6
 
 # ##############################################################################
 # Install all the base packages needed for the following installs
+# Set up timezone
+
 RUN apk update && \
   apk add \
     bash \
     ca-certificates \
-    wget
+    tzdata \
+    wget && \
+  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+  echo "Europe/Berlin" > /etc/timezone && \
+  apk del tzdata
 
-RUN \
-  mkdir /source
+WORKDIR /source
 
 # ##############################################################################
-# Install vcontrold from https://github.com/openv/vcontrold
+# Install and run vcontrold from https://github.com/openv/vcontrold
 
 RUN \
   apk add \
@@ -22,7 +27,6 @@ RUN \
     linux-headers \
     make \
     musl-dev && \
-  cd /source && \
   wget https://github.com/openv/vcontrold/releases/download/v0.98.4/vcontrold_0.98.4.orig.tar.gz && \
   tar xf vcontrold_0.98.4.orig.tar.gz && \
   cd vcontrold-0.98.4 && \
@@ -37,23 +41,10 @@ COPY \
   etc_vcontrold/vito.xml \
   /etc/vcontrold/
 
-# ##############################################################################
-# Set up timezone
-
-RUN \
-  apk add tzdata && \
-  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-  echo "Europe/Berlin" > /etc/timezone && \
-  apk del tzdata
-
-# ##############################################################################
-# Run vcontrold
-
-EXPOSE 3002
-VOLUME /var/vito
-
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-# CMD ["/usr/sbin/vcontrold", "--nodaemon", "--verbose"]
-CMD ["/usr/sbin/vcontrold", "--nodaemon"]
+ENTRYPOINT ["/usr/sbin/vcontrold", "--nodaemon"]
+
+EXPOSE 3002
+VOLUME /var/vito
