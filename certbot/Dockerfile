@@ -38,6 +38,6 @@ RUN \
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-ENTRYPOINT ["/certbot/certbot-auto", "renew", "--webroot", "--webroot-path=/var/letsencrypt"]
+# ENTRYPOINT ["/certbot/certbot-auto", "renew", "--webroot", "--webroot-path=/var/letsencrypt"]
 
 VOLUME /etc/letsencrypt /var/letsencrypt
