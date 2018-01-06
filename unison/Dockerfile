@@ -22,16 +22,12 @@ RUN \
   apt-get install \
     emacs \
     make \
-    ocaml
-
-RUN \
+    ocaml && \
   wget http://www.seas.upenn.edu/~bcpierce/unison/download/releases/stable/unison-2.48.4.tar.gz && \
   tar xf unison-2.48.4.tar.gz && \
   cd src && \
   make UISTYLE=text && \
-  cp unison unison-fsmonitor /usr/local/bin
-
-RUN \
+  cp unison unison-fsmonitor /usr/local/bin && \
   apt-get remove \
     emacs \
     make \
