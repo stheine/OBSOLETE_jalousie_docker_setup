@@ -2,15 +2,20 @@ FROM httpd:2.4.29-alpine
 
 # ##############################################################################
 # Install all the base packages needed for the following installs
+# Set up timezone
+
 RUN \
   apk update && \
   apk add \
     bash \
     ca-certificates \
-    wget
+    tzdata \
+    wget && \
+  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+  echo "Europe/Berlin" > /etc/timezone && \
+  apk del tzdata
 
-RUN \
-  mkdir /source
+WORKDIR /source
 
 # ##############################################################################
 # Install rrdtool from https://github.com/oetiker/rrdtool-1.x
@@ -26,7 +31,6 @@ RUN \
     pcre-dev \
     perl-dev \
     ttf-dejavu && \
-  cd /source && \
   wget https://github.com/oetiker/rrdtool-1.x/releases/download/v1.7.0/rrdtool-1.7.0.tar.gz && \
   tar xf rrdtool-1.7.0.tar.gz && \
   cd rrdtool-1.7.0 && \
@@ -41,23 +45,14 @@ RUN \
   ln -s /opt/rrdtool/lib/librrd.so.8.1.0 /usr/lib/
 
 # ##############################################################################
-# Set up timezone
-
-RUN \
-  apk add tzdata && \
-  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-  echo "Europe/Berlin" > /etc/timezone && \
-  apk del tzdata
-
-# ##############################################################################
 # Configure and run apache2
 
-EXPOSE 8080
-VOLUME /var/jalousie
-VOLUME /var/vito
-VOLUME /var/www
+WORKDIR $HTTPD_PREFIX
 
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
 COPY httpd.conf /usr/local/apache2/conf/
+
+EXPOSE 8080
+VOLUME /var/jalousie /var/vito /var/www
