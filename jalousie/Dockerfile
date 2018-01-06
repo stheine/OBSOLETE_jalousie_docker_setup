@@ -2,15 +2,20 @@ FROM node:8.9.3-alpine
 
 # ##############################################################################
 # Install all the base packages needed for the following installs
+# Set up timezone
+
 RUN \
   apk update && \
   apk add \
     bash \
     ca-certificates \
-    wget
+    tzdata \
+    wget && \
+  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+  echo "Europe/Berlin" > /etc/timezone && \
+  apk del tzdata
 
-RUN \
-  mkdir /source
+WORKDIR /source
 
 # ##############################################################################
 # Install pigpio from http://abyz.me.uk/rpi/pigpio/index.html
@@ -20,7 +25,6 @@ RUN \
     gcc \
     make \
     musl-dev && \
-  cd /source && \
   wget abyz.co.uk/rpi/pigpio/pigpio.zip && \
   unzip pigpio.zip && \
   cd PIGPIO && \
@@ -42,7 +46,6 @@ RUN \
     pango-dev \
     pcre-dev \
     perl-dev && \
-  cd /source && \
   wget https://github.com/oetiker/rrdtool-1.x/releases/download/v1.7.0/rrdtool-1.7.0.tar.gz && \
   tar xf rrdtool-1.7.0.tar.gz && \
   cd rrdtool-1.7.0 && \
@@ -57,20 +60,13 @@ RUN \
   ln -s /opt/rrdtool/lib/librrd.so.8.1.0 /usr/lib/
 
 # ##############################################################################
-# Set up timezone
-
-RUN \
-  apk add tzdata && \
-  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-  echo "Europe/Berlin" > /etc/timezone && \
-  apk del tzdata
-
-# ##############################################################################
 # Install and run jalousie app
 
 # This command is just to invalidate the cache and force docker to rebuild the app from here on
 # docker-compose build --build-arg CACHE_DATE=$(date) jalousie
 ARG CACHE_DATE=2018-01-03
+
+WORKDIR /
 
 RUN \
   apk add \
@@ -99,5 +95,4 @@ COPY docker_container_profile /root/.profile
 ENTRYPOINT ["/usr/local/bin/node", "/jalousie/lib/jalousie.js"]
 
 EXPOSE 9124
-VOLUME /var/jalousie
-VOLUME /var/vito
+VOLUME /var/jalousie /var/vito
