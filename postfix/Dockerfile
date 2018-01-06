@@ -2,16 +2,13 @@ FROM arm32v6/alpine:3.6
 
 # ##############################################################################
 # Install all the base packages needed for the following installs
-RUN \
-  apk update && \
-  apk add \
-    bash
-
-# ##############################################################################
 # Set up timezone
 
 RUN \
-  apk add tzdata && \
+  apk update && \
+  apk add \
+    bash \
+    tzdata && \
   cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
   echo "Europe/Berlin" > /etc/timezone && \
   apk del tzdata
@@ -32,12 +29,12 @@ RUN \
   /usr/sbin/postconf -e 'smtputf8_enable = no' && \
   mkdir /etc/postfix/creds
 
-EXPOSE 25
-VOLUME /postfix_creds
-# TODO VOLUME /var/spool/postfix
-
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
 COPY start.sh /
 CMD /start.sh
+
+EXPOSE 25
+VOLUME /postfix_creds
+# TODO /var/spool/postfix
