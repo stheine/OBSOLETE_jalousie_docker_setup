@@ -2,15 +2,20 @@ FROM arm32v6/alpine:3.6
 
 # ##############################################################################
 # Install all the base packages needed for the following installs
+# Set up timezone
+
 RUN \
   apk update && \
   apk add \
     bash \
     ca-certificates \
-    wget
+    tzdata \
+    wget && \
+  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+  echo "Europe/Berlin" > /etc/timezone && \
+  apk del tzdata
 
-RUN \
-  mkdir /source
+WORKDIR /source
 
 # ##############################################################################
 # Install vcontrold from https://github.com/openv/vcontrold
@@ -23,7 +28,6 @@ RUN \
     linux-headers \
     make \
     musl-dev && \
-  cd /source && \
   wget https://github.com/openv/vcontrold/releases/download/v0.98.4/vcontrold_0.98.4.orig.tar.gz && \
   tar xf vcontrold_0.98.4.orig.tar.gz && \
   cd vcontrold-0.98.4 && \
@@ -46,7 +50,6 @@ RUN \
     pango-dev \
     pcre-dev \
     perl-dev && \
-  cd /source && \
   wget https://github.com/oetiker/rrdtool-1.x/releases/download/v1.7.0/rrdtool-1.7.0.tar.gz && \
   tar xf rrdtool-1.7.0.tar.gz && \
   cd rrdtool-1.7.0 && \
@@ -71,18 +74,7 @@ RUN \
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 # ##############################################################################
-# Set up timezone
-
-RUN \
-  apk add tzdata && \
-  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-  echo "Europe/Berlin" > /etc/timezone && \
-  apk del tzdata
-
-# ##############################################################################
 # Install and run vito tasks
-
-VOLUME /var/vito
 
 COPY \
   ascheGeleert.sh \
@@ -103,4 +95,6 @@ RUN \
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-CMD ["/usr/sbin/crond", "-f"]
+ENTRYPOINT ["/usr/sbin/crond", "-f"]
+
+VOLUME /var/vito
