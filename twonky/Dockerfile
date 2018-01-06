@@ -1,29 +1,30 @@
 FROM resin/rpi-raspbian
 
+# ##############################################################################
+# Install all the base packages needed for the following installs
+# Set up timezone
+
 RUN \
   apt-get update && \
   apt-get install \
     vim \
     unzip \
     wget && \
-  mkdir /source
-
-# ##############################################################################
-# Set up timezone
-
-RUN \
   cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
   echo "Europe/Berlin" > /etc/timezone
+
+WORKDIR /source
 
 # ##############################################################################
 # Install and run twonky from http://www.twonkyforum.com/downloads/
 # Get the url of the package 'Linux ARM little endian glibc 2.13 HF (Raspbian)'
 
 RUN \
-  cd /source && \
-  wget http://www.twonkyforum.com/downloads/8.5/twonky-armel-glibc-2.13-hf-8.5.zip && \
-  mkdir /twonky && \
-  cd /twonky && \
+  wget http://www.twonkyforum.com/downloads/8.5/twonky-armel-glibc-2.13-hf-8.5.zip
+
+WORKDIR /twonky
+
+RUN \
   unzip /source/twonky-armel-glibc-2.13-hf-8.5.zip
 
 COPY docker_container_profile /root/.profile
