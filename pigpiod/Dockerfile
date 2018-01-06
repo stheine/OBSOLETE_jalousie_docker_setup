@@ -2,15 +2,20 @@ FROM arm32v6/alpine:3.6
 
 # ##############################################################################
 # Install all the base packages needed for the following installs
+# Set up timezone
+
 RUN \
   apk update && \
   apk add \
     bash \
     ca-certificates \
-    wget
+    tzdata \
+    wget && \
+  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
+  echo "Europe/Berlin" > /etc/timezone && \
+  apk del tzdata
 
-RUN \
-  mkdir /source
+WORKDIR /source
 
 # ##############################################################################
 # Install pigpio from http://abyz.me.uk/rpi/pigpio/index.html
@@ -20,7 +25,6 @@ RUN \
     gcc \
     make \
     musl-dev && \
-  cd /source && \
   wget abyz.co.uk/rpi/pigpio/pigpio.zip && \
   unzip pigpio.zip && \
   cd PIGPIO && \
@@ -30,24 +34,12 @@ RUN \
   make install
 
 # ##############################################################################
-# Set up timezone
-
-RUN \
-  apk add tzdata && \
-  cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
-  echo "Europe/Berlin" > /etc/timezone && \
-  apk del tzdata
-
-# ##############################################################################
 # Run pigpiod
-
-EXPOSE 8888
 
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
 COPY start.sh /
-CMD ["/start.sh"]
+ENTRYPOINT ["/start.sh"]
 
-# ENTRYPOINT ["/usr/local/bin/pigpiod", "-g"]
-# CMD ["/usr/local/bin/pigpiod", "-g"]
+EXPOSE 8888
