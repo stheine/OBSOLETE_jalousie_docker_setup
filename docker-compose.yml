@@ -45,12 +45,12 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,ro
       device: :/nfs/Data/linux/postfix_creds
-  postfix_spool:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=192.168.6.22,nolock,rw
-      device: :/nfs/Data/linux/postfix_spool
+#  postfix_spool:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: addr=192.168.6.22,nolock,rw
+#      device: :/nfs/Data/linux/postfix_spool
   unison:
     driver: local
     driver_opts:
