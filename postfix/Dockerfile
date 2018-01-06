@@ -27,7 +27,11 @@ RUN \
   /usr/sbin/postconf -e 'smtp_sasl_password_maps = hash:/etc/postfix/creds/sasl_password' && \
   /usr/sbin/postconf -e 'sender_canonical_maps = hash:/etc/postfix/creds/sender_canonical' && \
   /usr/sbin/postconf -e 'smtputf8_enable = no' && \
-  mkdir /etc/postfix/creds
+  /usr/sbin/postconf -e 'smtp_generic_maps = hash:/etc/postfix/generic' && \
+  mkdir /etc/postfix/creds && \
+  echo "pirate@pi-docker	stefan@heine7.de" >> /etc/postfix/generic && \
+  echo "root@pi-docker	stefan@heine7.de" >> /etc/postfix/generic && \
+  postmap /etc/postfix/generic
 
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
