@@ -1,6 +1,10 @@
 #!/bin/bash
 
+cd /mnt/mybook_data/linux/docker
+
 RESULT=`/usr/local/bin/docker-compose run certbot /certbot/certbot-auto renew --webroot --webroot-path=/var/letsencrypt`
+
+# echo "$RESULT"
 
 if [ -n "`echo \"$RESULT\" | grep 'heine7\.de.*success'`" ]
 then
