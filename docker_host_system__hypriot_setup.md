@@ -20,6 +20,7 @@ sudo mkdir /mnt/mybook_data
 sudo mount -a
 
 cat /mnt/mybook_data/linux/docker/docker_host_system__profile >> .profile
+cat /mnt/mybook_data/linux/sshd_certs/bonsai.pub >> .ssh/authorized_keys
 
 sudo update-alternatives --set editor /usr/bin/vim.tiny
 ```
