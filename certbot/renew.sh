@@ -2,7 +2,7 @@
 
 cd /mnt/mybook_data/linux/docker
 
-RESULT=`/usr/local/bin/docker-compose run certbot /certbot/certbot-auto renew --webroot --webroot-path=/var/letsencrypt 2>/dev/null`
+RESULT=`/usr/local/bin/docker-compose run --rm certbot /certbot/certbot-auto renew --webroot --webroot-path=/var/letsencrypt 2>/dev/null`
 
 # echo "$RESULT"
 
