@@ -63,7 +63,7 @@ RUN \
 # Install and run jalousie app
 
 # This command is just to invalidate the cache and force docker to rebuild the app from here on
-# docker-compose build --build-arg CACHE_DATE=$(date) jalousie
+# docker-compose build --build-arg CACHE_DATE="$(date)" jalousie
 ARG CACHE_DATE=2018-01-03
 
 WORKDIR /
@@ -86,6 +86,15 @@ RUN \
   git config --global user.email "stheine@arcor.de" && \
   git config --global user.name "Stefan Heine" && \
   git config --global core.pager "more"
+
+
+# ##############################################################################
+# React
+WORKDIR /jalousie
+
+RUN \
+  npm install roboter roboter-client
+
 
 COPY vimrc /root/.vimrc
 
