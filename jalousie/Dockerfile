@@ -10,6 +10,7 @@ RUN \
     bash \
     ca-certificates \
     tzdata \
+    vim \
     wget && \
   cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime && \
   echo "Europe/Berlin" > /etc/timezone && \
@@ -75,26 +76,6 @@ RUN \
   git clone https://github.com/stheine/jalousie.git && \
   cd /jalousie && \
   npm install
-
-# ##############################################################################
-# Setting for development environment
-RUN \
-  apk add \
-    vim && \
-  npm install --global \
-    eslint-cli && \
-  git config --global user.email "stheine@arcor.de" && \
-  git config --global user.name "Stefan Heine" && \
-  git config --global core.pager "more"
-
-
-# ##############################################################################
-# React
-WORKDIR /jalousie
-
-RUN \
-  npm install roboter roboter-client
-
 
 COPY vimrc /root/.vimrc
 

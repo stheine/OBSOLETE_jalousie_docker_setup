@@ -157,7 +157,10 @@ services:
       - jalousie
   jalousie:
     restart: unless-stopped
-    build: jalousie
+    build:
+      context: jalousie
+      args:
+        - CACHE_DATE=2018-01-20-a
     ports:
       - 9124:9124
     networks:
