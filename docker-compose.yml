@@ -29,10 +29,8 @@ volumes:
     # //fritz.nas/fritz.nas/FritzBox/NAS /mnt/fritzbox_nas cifs username=nas,passwd= 0 0
     driver: cifs
     driver_opts:
-      share: fritz.nas/fritz.nas/FritzBox/NAS
-      username: nas
-      passwd: "nas1"
-      password: "nas2"
+      share: fritz.nas/fritz.nas/Fritz_NAS_HD
+      username: "fritz.nas"
   portainer:
     driver: local
     driver_opts:
