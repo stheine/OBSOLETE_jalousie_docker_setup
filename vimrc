@@ -11,6 +11,9 @@
 :set tabstop=80
 :set sw=2
 :set scrolloff=5
+:set title
+:set titlestring=%t
+:set titleold=...
 
 :set background=light
 :set nobackup
@@ -61,16 +64,16 @@ nmap <silent> <C-n> <Esc>:call ToggleHLSearch()<CR>
 
 
 " Pathogen plugin manager
-execute pathogen#infect()
-
-" eslint integration
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-let g:syntastic_javascript_checkers = ['eslint']
-let b:syntastic_javascript_eslint_exec = 'eslint'
+" execute pathogen#infect()
+"
+" " eslint integration
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+"
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 1
+" let g:syntastic_javascript_checkers = ['eslint']
+" let b:syntastic_javascript_eslint_exec = 'eslint'

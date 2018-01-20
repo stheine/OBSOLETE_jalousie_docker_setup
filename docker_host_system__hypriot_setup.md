@@ -14,15 +14,17 @@ sudo vi /boot/user-data
 sudo dpkg-reconfigure tzdata
 
 sudo apt-get update
-sudo apt-get install -y nfs-common
+sudo apt-get install -y nfs-common vim
 echo '192.168.6.22:/nfs/Data /mnt/mybook_data nfs defaults 0 0' | sudo tee -a /etc/fstab
 sudo mkdir /mnt/mybook_data
 sudo mount -a
 
 cat /mnt/mybook_data/linux/docker/docker_host_system__profile >> .profile
 cat /mnt/mybook_data/linux/sshd_certs/bonsai.pub >> .ssh/authorized_keys
+cat /mnt/mybook_data/linux/docker/vimrc >> .vimrc
 
-sudo update-alternatives --set editor /usr/bin/vim.tiny
+sudo update-alternatives --install /usr/bin/editor editor /usr/bin/vim 100
+sudo update-alternatives --set editor /usr/bin/vim
 ```
 
 log out and log in again to make the new profile settings active

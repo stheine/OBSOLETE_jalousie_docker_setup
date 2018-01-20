@@ -1,4 +1,4 @@
-alias vi=vim.tiny
+alias vi=vim
 
 export EDITOR=vi
 
