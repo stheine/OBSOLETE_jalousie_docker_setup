@@ -19,9 +19,9 @@ then
   if [ $CODE != "00" ]
   then
     DATE=`echo "$LAST_ERROR_RAW" | awk '{ print $2$3"-"$4"-"$5" "$7":"$8":"$9 }'`
-    touch --date="$DATE" _lastError.time
+    touch --date="$DATE" /var/vito/_lastError.time
 
-    if [ _lastError.reported -ot _lastError.time ]
+    if [ /var/vito/_lastError.reported -ot /var/vito/_lastError.time ]
     then
       STOERUNG=`echo "$LAST_ERROR_RAW" | awk '{ print $1 }'`
 #      echo "Störung $STOERUNG: $DATE"
@@ -36,7 +36,7 @@ EOF
 
       echo "$STOERUNG: $DATE" >> /var/vito/vitoStoerungen.log
 
-      touch _lastError.reported
+      touch /var/vito/_lastError.reported
     #else
     #  echo "Already reported"
     fi
@@ -62,8 +62,8 @@ VERBRAUCH_SEITDEM=`expr $VERBRAUCH_KG - $LETZTE_LEERUNG_KG`
 if ([ "$VERBRAUCH_SEITDEM" -gt 400 ] && [ "$VERBRAUCH_SEITDEM" -lt 410 ]) || \
     [ "$VERBRAUCH_SEITDEM" -gt 480 ]
 then
-  touch --date="`date --iso-8601`" _lastAsche.now
-  if [ _lastAsche.reportedPlus2 -ot _lastAsche.now ]
+  touch --date="`date --iso-8601`" /var/vito/_lastAsche.now
+  if [ /var/vito/_lastAsche.reportedPlus2 -ot /var/vito/_lastAsche.now ]
   then
     /usr/sbin/sendmail -t <<-EOF
 From: vito <technik@heine7.de>
@@ -73,7 +73,7 @@ Content-Type: text/html; charset=UTF-8
 
 Verbrauch seit letzter Leerung: $VERBRAUCH_SEITDEM kg<br>Asche leeren.
 EOF
-    touch --date="`date --iso-8601 --date '2 days'`" _lastAsche.reportedPlus2
+    touch --date="`date --iso-8601 --date '2 days'`" /var/vito/_lastAsche.reportedPlus2
   fi
 fi
 
@@ -86,7 +86,7 @@ systemZeit=`date +%Y%m%d%H%M%S`
 zeitDiff=`expr $systemZeit - $vitoZeit`
 if ([ -59 -gt $zeitDiff ] || [ $zeitDiff -gt 59 ])
 then
-  if [ ! -f _uhrzeitFalsch.reported ]
+  if [ ! -f /var/vito/_uhrzeitFalsch.reported ]
   then
     /usr/sbin/sendmail -t <<-EOF
 From: vito <technik@heine7.de>
@@ -96,12 +96,12 @@ Content-Type: text/html; charset=UTF-8
 
 Vito Uhrzeit geht falsch um $zeitDiff Sekunden<p>$3<br>$vitoZeit<br>$systemZeit<br>$zeitDiff
 EOF
-    touch _uhrzeitFalsch.reported
+    touch /var/vito/_uhrzeitFalsch.reported
   fi
 else
-  if [ -f _uhrzeitFalsch.reported ]
+  if [ -f /var/vito/_uhrzeitFalsch.reported ]
   then
-    rm _uhrzeitFalsch.reported
+    rm /var/vito/_uhrzeitFalsch.reported
   fi
 fi
 

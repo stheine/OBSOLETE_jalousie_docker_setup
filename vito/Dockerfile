@@ -76,6 +76,10 @@ COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 # ##############################################################################
 # Install and run vito tasks
 
+RUN \
+  apk add \
+    coreutils
+
 COPY \
   ascheGeleert.sh \
   ascheGeleert.cmd \
