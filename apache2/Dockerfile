@@ -52,7 +52,11 @@ WORKDIR $HTTPD_PREFIX
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
+RUN \
+  mkdir /usr/local/apache2/lock/ && \
+  chown www-data:www-data /usr/local/apache2/lock/
+
 COPY httpd.conf /usr/local/apache2/conf/
 
 EXPOSE 8080
-VOLUME /var/jalousie /var/vito /var/www
+VOLUME /var/jalousie /var/vito /var/webdav /var/www /var/www_auth

@@ -79,12 +79,24 @@ volumes:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/vmail
+  webdav:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/webdav
   www:
     driver: local
     driver_opts:
       type: nfs
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Data/linux/www
+  www_auth:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/www_auth
 
 networks:
   backend:
@@ -152,7 +164,9 @@ services:
     volumes:
       - jalousie:/var/jalousie:nocopy
       - vito:/var/vito:nocopy
+      - webdav:/var/webdav:nocopy
       - www:/var/www:nocopy
+      - www_auth:/var/www_auth:nocopy
     links:
       - jalousie
   jalousie:
