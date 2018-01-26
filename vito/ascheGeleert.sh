@@ -1,6 +1,8 @@
 #!/bin/sh
 # vclient script to check for errors
 
+cd /vito
+
 VERBRAUCH_OUT=`/vito/vclientLock.sh -f ascheGeleert.cmd`
 VERBRAUCH_KG=`echo $VERBRAUCH_OUT | awk '{ print $2 }' | sed -e 's/\.000000//'`
 

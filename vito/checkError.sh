@@ -59,8 +59,8 @@ fi
 VERBRAUCH_KG=`echo "$2" | sed -e 's/\.000000//'`
 LETZTE_LEERUNG_KG=`cat /var/vito/_ascheGeleert.log | tail -1 | awk '{print $2}'`
 VERBRAUCH_SEITDEM=`expr $VERBRAUCH_KG - $LETZTE_LEERUNG_KG`
-if ([ "$VERBRAUCH_SEITDEM" -gt 400 ] && [ "$VERBRAUCH_SEITDEM" -lt 410 ]) || \
-    [ "$VERBRAUCH_SEITDEM" -gt 480 ]
+if ([ "$VERBRAUCH_SEITDEM" -gt 500 ] && [ "$VERBRAUCH_SEITDEM" -lt 510 ]) || \
+    [ "$VERBRAUCH_SEITDEM" -gt 580 ]
 then
   touch --date="`date --iso-8601`" /var/vito/_lastAsche.now
   if [ /var/vito/_lastAsche.reportedPlus2 -ot /var/vito/_lastAsche.now ]
