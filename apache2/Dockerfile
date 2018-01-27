@@ -47,6 +47,10 @@ RUN \
 # ##############################################################################
 # Configure and run apache2
 
+RUN \
+  apk add \
+    coreutils
+
 WORKDIR $HTTPD_PREFIX
 
 COPY docker_container_profile /root/.profile
