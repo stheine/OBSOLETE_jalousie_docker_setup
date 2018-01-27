@@ -1,5 +1,5 @@
 #!/bin/sh
-# vclient script to check for errors
+# vclient script um die aktuellen Verbrauch als 'ascheGeleert' zu speichern.
 
 cd /vito
 
