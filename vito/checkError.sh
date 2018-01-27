@@ -71,7 +71,14 @@ To: stefan@heine7.de
 Subject: Asche leeren
 Content-Type: text/html; charset=UTF-8
 
-Verbrauch seit letzter Leerung: $VERBRAUCH_SEITDEM kg<br>Asche leeren.
+<p>
+Verbrauch seit letzter Leerung: $VERBRAUCH_SEITDEM kg
+<br />
+Asche leeren.
+</p>
+<p>
+<a href='https://heine7.de/vito/ascheGeleert.sh'>Asche geleert</a>
+</p>
 EOF
     touch --date="`date --iso-8601 --date '2 days'`" /var/vito/_lastAsche.reportedPlus2
   fi
