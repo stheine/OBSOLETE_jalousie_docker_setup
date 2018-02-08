@@ -92,6 +92,12 @@ sudo vi /etc/default/docker-volume-netshare
 ```
 > DKV_NETSHARE_OPTS="cifs"
 ```
+sudo vi ~root/.netrc
+```
+machine fritz.nas
+  username  fritz.nas
+  password  nas
+```
 sudo systemctl enable docker-volume-netshare
 sudo systemctl start docker-volume-netshare
 ```

@@ -26,11 +26,9 @@ volumes:
       o: addr=192.168.6.22,nolock,rw
       device: :/nfs/Musik
   nas_fritzbox:
-    # //fritz.nas/fritz.nas/FritzBox/NAS /mnt/fritzbox_nas cifs username=nas,passwd= 0 0
     driver: cifs
     driver_opts:
       share: fritz.nas/fritz.nas/Fritz_NAS_HD
-      username: "fritz.nas"
   portainer:
     driver: local
     driver_opts:
