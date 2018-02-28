@@ -19,12 +19,16 @@ echo '192.168.6.22:/nfs/Data /mnt/mybook_data nfs defaults 0 0' | sudo tee -a /e
 sudo mkdir /mnt/mybook_data
 sudo mount -a
 
+cat /etc/logrotate.conf | sed 's/^#compress/delaycompress/' | sudo tee /etc/logrotate.conf.tmp
+sudo mv /etc/logrotate.conf.tmp  /etc/logrotate.conf
+ 
 cat /mnt/mybook_data/linux/docker/docker_host_system__profile >> .profile
 cat /mnt/mybook_data/linux/sshd_certs/bonsai.pub >> .ssh/authorized_keys
 cat /mnt/mybook_data/linux/docker/vimrc >> .vimrc
 
 sudo update-alternatives --install /usr/bin/editor editor /usr/bin/vim 100
 sudo update-alternatives --set editor /usr/bin/vim
+
 ```
 
 log out and log in again to make the new profile settings active
@@ -132,7 +136,7 @@ git config --global user.email "stheine@arcor.de"
 git config --global user.name "Stefan Heine"
 git config --global push.default simple
 
-cp /mnt/mybook_data/linux/sshd_certs/pirate /home/pirate/.ssh/id_rsa
+cp /mnt/mybook_data/linux/sshd_certs/pirate ~/.ssh/id_rsa
 ssh -T git@github.com
 # accept the host's fingerprint
 
