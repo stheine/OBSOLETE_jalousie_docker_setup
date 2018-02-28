@@ -1,3 +1,14 @@
+if [ "$E14" != "OK" ]; then
+  echo `date` " es ist ein Fehler aufgetreten: $C14:$E14" >>/var/vito/error.log
+  exit 1;
+fi
+if [ "$E15" != "OK" ]; then
+  echo `date` " es ist ein Fehler aufgetreten: $C15:$E15" >>/var/vito/error.log
+  exit 1;
+fi
+
+/vito/checkError.sh "$R14" "$9" "$R15"
+
 if [ "$E1" != "OK" ]; then
   echo `date` " es ist ein Fehler aufgetreten: $C1:$E1" >>/var/vito/error.log
   exit 1;
@@ -52,17 +63,6 @@ if [ "$E13" != "OK" ]; then
 fi
 
 /opt/rrdtool/bin/rrdtool update /var/vito/vito.rrd "N:$1:$2:$3:$4:$5:$6:$7:$8:$9:$10:$11:$13"
-
-if [ "$E14" != "OK" ]; then
-  echo `date` " es ist ein Fehler aufgetreten: $C14:$E14" >>/var/vito/error.log
-  exit 1;
-fi
-if [ "$E15" != "OK" ]; then
-  echo `date` " es ist ein Fehler aufgetreten: $C15:$E15" >>/var/vito/error.log
-  exit 1;
-fi
-
-/vito/checkError.sh "$R14" "$9" "$R15"
 
 echo "$1" > /var/vito/_tempAussen.dat
 echo "$9" > /var/vito/_brennerVerbrauch.dat

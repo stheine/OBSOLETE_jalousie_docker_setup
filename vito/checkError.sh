@@ -88,12 +88,15 @@ fi
 
 # Uhrzeit Einstellung prüfen
 
-vitoZeit=`echo "$3" | awk -F ' ' '{print $1$2$3$4$6$7$8}'`
-systemZeit=`date +%Y%m%d%H%M%S`
-zeitDiff=`expr $systemZeit - $vitoZeit`
-if ([ -59 -gt $zeitDiff ] || [ $zeitDiff -gt 59 ])
+vitoZeit=`echo "$3" | awk -F ' ' '{print $1$2"-"$3"-"$4" "$6":"$7":"$8}'`
+vitoZeitSeconds=`date --date "$vitoZeit" +%s`
+systemZeit=`date +'%Y-%m-%d %H:%M:%S'`
+systemZeitSeconds=`date +%s`
+zeitDiff=`expr $systemZeitSeconds - $vitoZeitSeconds`
+if ([ $zeitDiff -lt -60 ] || [ $zeitDiff -gt 60 ])
 then
-  if [ ! -f /var/vito/_uhrzeitFalsch.reported ]
+  touch --date="`date --iso-8601`" /var/vito/_uhrzeitFalsch.now
+  if ([ ! -f /var/vito/_uhrzeitFalsch.reportedPlus2 ] || [ /var/vito/_uhrzeitFalsch.reportedPlus2 -ot /var/vito/_uhrzeitFalsch.now ])
   then
     /usr/sbin/sendmail -t <<-EOF
 From: vito <technik@heine7.de>
@@ -101,14 +104,18 @@ To: stefan@heine7.de
 Subject: Vito Uhrzeit falsch
 Content-Type: text/html; charset=UTF-8
 
-Vito Uhrzeit geht falsch um $zeitDiff Sekunden<p>$3<br>$vitoZeit<br>$systemZeit<br>$zeitDiff
+Vito Uhrzeit geht falsch um $zeitDiff Sekunden<p>vito: $vitoZeit<br>system: $systemZeit
 EOF
-    touch /var/vito/_uhrzeitFalsch.reported
+    touch --date="`date --iso-8601 --date '2 days'`" /var/vito/_uhrzeitFalsch.reportedPlus2
   fi
 else
-  if [ -f /var/vito/_uhrzeitFalsch.reported ]
+  if [ -f /var/vito/_uhrzeitFalsch.now ]
   then
-    rm /var/vito/_uhrzeitFalsch.reported
+    rm /var/vito/_uhrzeitFalsch.now
+  fi
+  if [ -f /var/vito/_uhrzeitFalsch.reportedPlus2 ]
+  then
+    rm /var/vito/_uhrzeitFalsch.reportedPlus2
   fi
 fi
 
