@@ -1,6 +1,6 @@
 # Install
 
-## Install Hypriot
+## Install Hypriot (1.8.0)
 http://blog.hypriot.com/downloads/
 download, write to SD card, and boot in raspi
 ```
@@ -8,15 +8,17 @@ ssh pirate@<new IP>
 passwd
 # hypriot -> <secret password>
 
-sudo vi /boot/user-data
 # Update the 'hostname'
+sudo vi /etc/hostname
 
 sudo dpkg-reconfigure tzdata
 
 sudo apt-get update
-sudo apt-get install -y nfs-common vim
-echo '192.168.6.22:/nfs/Data /mnt/mybook_data nfs defaults 0 0' | sudo tee -a /etc/fstab
+sudo apt-get install -y cifs-utils nfs-common vim dnsutils
 sudo mkdir /mnt/mybook_data
+echo '192.168.6.22:/nfs/Data /mnt/mybook_data nfs defaults 0 0' | sudo tee -a /etc/fstab
+sudo mkdir /mnt/fritz_nas_hd
+echo '//fritz.nas/fritz.nas/Fritz_NAS_HD /mnt/fritz_nas_hd cifs username=fritz.nas,password=nas 0 0' | sudo tee -a /etc/fstab
 sudo mount -a
 
 cat /etc/logrotate.conf | sed 's/^#compress/delaycompress/' | sudo tee /etc/logrotate.conf.tmp
@@ -41,16 +43,10 @@ https://www.raspberrypi.org/documentation/configuration/uart.md
 https://www.raspberrypi.org/documentation/configuration/config-txt/boot.md
 https://spellfoundry.com/2016/05/29/configuring-gpio-serial-port-raspbian-jessie-including-pi-3/
 
-Note: This is not properly working on Hypriot. It seems like the Hypriot kernel does not support the dtoverlays to enable the UART.
-
-Workaround: ```rpi-update``` to update the kernel - but this is a non-Hypriot kernel then.
-
-https://gitter.im/hypriot/talk
-
 ```
 sudo vi /boot/cmdline.txt
 ```
-> remove the references to ttyAMA0 and serial
+> remove the references to tty and serial
 
 ```
 sudo vi /boot/config.txt
@@ -84,27 +80,31 @@ sudo systemctl disable hciuart
 ```
 
 ## Allow docker access to CIFS filesystem
-
-https://github.com/gondor/docker-volume-netshare/blob/master/README.md
-
-```
-wget https://github.com/ContainX/docker-volume-netshare/releases/download/v0.34/docker-volume-netshare_0.34_armhf.deb
-sudo dpkg -i docker-volume-netshare_0.34_armhf.deb
-rm docker-volume-netshare_0.34_armhf.deb
-
-sudo vi /etc/default/docker-volume-netshare
-```
-> DKV_NETSHARE_OPTS="cifs"
-```
-sudo vi ~root/.netrc
-```
-machine fritz.nas
-  username  fritz.nas
-  password  nas
-```
-sudo systemctl enable docker-volume-netshare
-sudo systemctl start docker-volume-netshare
-```
+#
+#2018-04-04 this is not working, but results in 
+#ERROR: for twonky  Cannot start service twonky: error while mounting volume '/var/lib/docker-volumes/netshare/cifs/docker_nas_fritzbox': VolumeDriver.Mount: exit status 32
+#so I switched to mounting the filesystem on the host and binding to the container.
+#
+#https://github.com/gondor/docker-volume-netshare/blob/master/README.md
+#
+#```
+#wget https://github.com/ContainX/docker-volume-netshare/releases/download/v0.34/docker-volume-netshare_0.34_armhf.deb
+#sudo dpkg -i docker-volume-netshare_0.34_armhf.deb
+#rm docker-volume-netshare_0.34_armhf.deb
+#
+#sudo vi /etc/default/docker-volume-netshare
+#```
+#> DKV_NETSHARE_OPTS="cifs"
+#```
+#sudo vi ~root/.netrc
+#```
+#machine fritz.nas
+#  username  fritz.nas
+#  password  nas
+#```
+#sudo systemctl enable docker-volume-netshare
+#sudo systemctl start docker-volume-netshare
+#```
 
 ## Allow email on the host
 
@@ -113,7 +113,7 @@ sudo apt-get install -y mailutils ssmtp
 echo "mailhub=localhost" | sudo tee /etc/ssmtp/ssmtp.conf
 ```
 
-Test:
+Test (after the postfix container is running):
 ```
 /usr/sbin/sendmail -t <<-EOF
 From: pirate <technik@heine7.de>
@@ -136,6 +136,7 @@ git config --global user.email "stheine@arcor.de"
 git config --global user.name "Stefan Heine"
 git config --global push.default simple
 
+mkdir .ssh
 cp /mnt/mybook_data/linux/sshd_certs/pirate ~/.ssh/id_rsa
 ssh -T git@github.com
 # accept the host's fingerprint
