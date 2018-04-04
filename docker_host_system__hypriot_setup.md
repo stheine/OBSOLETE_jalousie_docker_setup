@@ -25,6 +25,7 @@ cat /etc/logrotate.conf | sed 's/^#compress/delaycompress/' | sudo tee /etc/logr
 sudo mv /etc/logrotate.conf.tmp  /etc/logrotate.conf
  
 cat /mnt/mybook_data/linux/docker/docker_host_system__profile >> .profile
+mkdir .ssh
 cat /mnt/mybook_data/linux/sshd_certs/bonsai.pub >> .ssh/authorized_keys
 cat /mnt/mybook_data/linux/docker/vimrc >> .vimrc
 
@@ -136,7 +137,6 @@ git config --global user.email "stheine@arcor.de"
 git config --global user.name "Stefan Heine"
 git config --global push.default simple
 
-mkdir .ssh
 cp /mnt/mybook_data/linux/sshd_certs/pirate ~/.ssh/id_rsa
 ssh -T git@github.com
 # accept the host's fingerprint
