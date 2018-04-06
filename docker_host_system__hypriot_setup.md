@@ -25,8 +25,16 @@ cat /etc/logrotate.conf | sed 's/^#compress/delaycompress/' | sudo tee /etc/logr
 sudo mv /etc/logrotate.conf.tmp  /etc/logrotate.conf
  
 cat /mnt/mybook_data/linux/docker/docker_host_system__profile >> .profile
+
 mkdir .ssh
 cat /mnt/mybook_data/linux/sshd_certs/bonsai.pub >> .ssh/authorized_keys
+cat /mnt/mybook_data/linux/sshd_certs/ssh/stheine@redwood.pub >> .ssh/authorized_keys
+sudo vi /etc/ssh/sshd_config
+```
+PasswordAuthentication no
+```
+sudo /etc/init.d/ssh restart
+
 cat /mnt/mybook_data/linux/docker/vimrc >> .vimrc
 
 sudo update-alternatives --install /usr/bin/editor editor /usr/bin/vim 100
