@@ -20,12 +20,12 @@ WORKDIR /source
 # Get the url of the package 'Linux ARM little endian glibc 2.13 HF (Raspbian)'
 
 RUN \
-  wget http://www.twonkyforum.com/downloads/8.5/twonky-armel-glibc-2.13-hf-8.5.zip
+  wget http://www.twonkyforum.com/downloads/8.3/twonky-armel-glibc-2.13-hf-8.3.zip
 
 WORKDIR /twonky
 
 RUN \
-  unzip /source/twonky-armel-glibc-2.13-hf-8.5.zip
+  unzip /source/twonky-armel-glibc-2.13-hf-8.3.zip
 
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
