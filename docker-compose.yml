@@ -52,6 +52,12 @@ volumes:
 #      type: nfs
 #      o: addr=192.168.6.22,nolock,rw
 #      device: :/nfs/Data/linux/postfix_spool
+  strom:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.6.22,nolock,rw
+      device: :/nfs/Data/linux/strom
   unison:
     driver: local
     driver_opts:
@@ -166,6 +172,7 @@ services:
       - backend
     volumes:
       - jalousie:/var/jalousie:nocopy
+      - strom:/var/strom:nocopy
       - vito:/var/vito:nocopy
       - webdav:/var/webdav:nocopy
       - www:/var/www:nocopy
@@ -184,6 +191,7 @@ services:
       - backend
     volumes:
       - jalousie:/var/jalousie:nocopy
+      - strom:/var/strom:nocopy
       - vito:/var/vito:nocopy,ro
     links:
       - postfix
