@@ -168,7 +168,7 @@ https://certbot.eff.org/#debianother-other
 ```
 crontab -e
 ```
-> 26 0,12 * * * /usr/local/bin/docker-compose run certbot
+> 26 0,12 10,20,30 * * /usr/local/bin/docker-compose run certbot
 
 # Maintenance
 

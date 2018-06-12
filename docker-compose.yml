@@ -139,7 +139,7 @@ services:
     #       The real action is called by cron '/mnt/mybook_data/linux/docker/certbot/renew.sh'
     restart: "no"
     build: certbot
-    command: /bin/true
+#    command: /bin/true
     volumes:
       - letsencrypt:/etc/letsencrypt:nocopy
       - letsencrypt_www:/var/letsencrypt

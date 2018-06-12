@@ -39,10 +39,10 @@ RUN \
     py-virtualenv && \
   ./certbot-auto --no-bootstrap ; \
   /bin/true
- 
+
 COPY docker_container_profile /root/.profile
 # CMD ["/bin/bash", "-l"]
 
-# ENTRYPOINT ["/certbot/certbot-auto", "renew", "--webroot", "--webroot-path=/var/letsencrypt"]
+CMD ["/certbot/certbot-auto", "renew", "--webroot", "--webroot-path=/var/letsencrypt"]
 
 VOLUME /etc/letsencrypt /var/letsencrypt
