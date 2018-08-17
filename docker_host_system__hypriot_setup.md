@@ -146,6 +146,7 @@ git config --global user.name "Stefan Heine"
 git config --global push.default simple
 
 cp /mnt/mybook_data/linux/sshd_certs/pirate ~/.ssh/id_rsa
+cp /mnt/mybook_data/linux/sshd_certs/pirate.pub ~/.ssh/id_rsa.pub
 ssh -T git@github.com
 # accept the host's fingerprint
 
