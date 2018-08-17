@@ -63,33 +63,26 @@ RUN \
 # ##############################################################################
 # Install and run jalousie app
 
-# This command is just to invalidate the cache and force docker to rebuild the app from here on
-# docker-compose build --build-arg CACHE_DATE_JS="$(date)" jalousie
-ARG CACHE_DATE_JS=2018-01-20
-
-WORKDIR /jalousie_prepare
-
-# Speed up the installation by preinstalling some large libs and saving this as a layer in docker.
 RUN \
   apk add \
     git \
-    python && \
-  npm init --yes && \
-  npm install \
-    @stheine/pigpiod \
-    rrdtools
+    python
 
 # This command is just to invalidate the cache and force docker to rebuild the app from here on
 # docker-compose build --build-arg CACHE_DATE="$(date)" jalousie
 ARG CACHE_DATE=2018-01-20
 
-WORKDIR /
+#  git clone https://github.com/stheine/jalousie.git && \
+#  cd /jalousie && \
+
+WORKDIR /jalousie
+
+COPY jalousie/package.json /jalousie/
 
 RUN \
-  git clone https://github.com/stheine/jalousie.git && \
-  cd /jalousie && \
-  mv /jalousie_prepare/node_modules . && \
-  npm install --production
+  npm install
+
+COPY jalousie/ /jalousie/
 
 COPY vimrc /root/.vimrc
 
@@ -99,4 +92,4 @@ COPY docker_container_profile /root/.profile
 CMD ["/usr/local/bin/node", "/jalousie/lib/jalousie.js"]
 
 EXPOSE 9124
-VOLUME /var/jalousie /var/vito
+VOLUME /var/jalousie /var/strom /var/vito
